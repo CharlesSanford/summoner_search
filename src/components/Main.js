@@ -16,7 +16,8 @@ class AppComponent extends React.Component {
       name:'',
       profileIconId:'',
       revisionDate:'',
-      summonerLevel:''
+      summonerLevel:'',
+      profileIconURL:'http://avatar.leagueoflegends.com/na/.png'
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -35,9 +36,13 @@ class AppComponent extends React.Component {
 
     const _this = this
     var cors_api_url = 'https://cors-anywhere.herokuapp.com/'
-    var url = 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/' + this.state.summonerName.replace(/ /g,'') + '?api_key=' + api_key.key
+    var summoner_api_url = 'https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/' + this.state.summonerName.replace(/ /g,'') + '?api_key=' + api_key.key
     var myInit = { method: 'GET'};
-    fetch(cors_api_url+url, myInit)
+
+    this.setState({profileIconURL: 'http://avatar.leagueoflegends.com/na/'+ this.state.summonerName.replace(/ /g,'') +'.png'})
+
+    //fetch 'summoner' api data
+    fetch(cors_api_url+summoner_api_url, myInit)
       .then(res => res.json())
       .then(function(json){
         console.log(json)
@@ -47,14 +52,15 @@ class AppComponent extends React.Component {
         _this.setState({revisionDate: json[_this.state.summonerName.replace(/ /g,'').toLowerCase()].revisionDate})
         _this.setState({summonerLevel: json[_this.state.summonerName.replace(/ /g,'').toLowerCase()].summonerLevel})
       })
+
+
     event.preventDefault();
   }
 
   render() {
-    console.log('rendering')
     return (
       <div className="index">
-        <img src={'http://avatar.leagueoflegends.com/na/'+ this.state.summonerName.replace(/ /g,'') +'.png'} alt={this.state.name} />
+        <img src={this.state.profileIconURL} alt={this.state.name} />
         <form onSubmit={this.handleSubmit}>
           <label>
             Summoner:
